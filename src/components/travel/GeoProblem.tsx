@@ -1,7 +1,7 @@
 import { LocateOff } from "lucide-react";
 import { PermissionDeniedState } from "@/components/states/PermissionDeniedState";
 import { UnsupportedBrowserState } from "@/components/states/UnsupportedBrowserState";
-import type { GeoState } from "@/lib/travel/client";
+import { isIOS, type GeoState } from "@/lib/travel/client";
 
 /** One place that explains every way location can fail. Renders nothing when there's no problem. */
 export function GeoProblem({ state, onRetry }: { state: GeoState; onRetry?: () => void }) {
@@ -10,7 +10,11 @@ export function GeoProblem({ state, onRetry }: { state: GeoState; onRetry?: () =
     return (
       <PermissionDeniedState
         permission="Location"
-        guidance="ASSURED can't see your location. To use this, allow Location for this site in your browser's site settings (usually the lock or tune icon next to the address), then reload the page."
+        guidance={
+          isIOS()
+            ? "ASSURED can't see your location. On iPhone/iPad: open Settings → Privacy & Security → Location Services, make sure it's on, then find your browser (Safari or Chrome) in the list and set it to \"While Using the App\". Reload this page afterwards."
+            : "ASSURED can't see your location. To use this, allow Location for this site in your browser's site settings (usually the lock or tune icon next to the address), then reload the page."
+        }
       />
     );
   }
