@@ -103,6 +103,14 @@ function guardBlock(b: Block, issues: string[]): Block | undefined {
     }
     case "path":
       return { ...b, title: scrubText(b.title, issues), steps: b.steps.map((s) => guardStep(s, issues)) };
+    case "places": {
+      // Nearby places come from a live OpenStreetMap lookup (never a model), but
+      // we still scrub the free-text label/name fields defensively so this
+      // block type is safe to pass through verifyReply() if it's ever routed
+      // through the server path instead of built client-side directly.
+      const items = b.items.map((p) => ({ ...p, name: scrubText(p.name, issues) }));
+      return { ...b, label: scrubText(b.label, issues), items };
+    }
   }
 }
 
