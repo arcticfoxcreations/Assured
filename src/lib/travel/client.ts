@@ -167,13 +167,33 @@ export function useGeolocation() {
   const err = useCallback((e: GeolocationPositionError) => setState(e.code === 1 ? "denied" : e.code === 2 ? "unavailable" : "timeout"), []);
 
   const blocked = useCallback((): boolean => {
-    if (typeof navigator === "undefined" || !("geolocation" in navigator)) { setState("unsupported"); return true; }
-    if (!window.isSecureContext) { setState("insecure"); return true; }
+    // Some iOS browsers/WebViews (Lockdown Mode, certain MDM-managed or
+    // in-app browsers) expose `navigator.geolocation` as a real object —
+    // so `"geolocation" in navigator` is true — but do NOT implement
+    // `getCurrentPosition`/`watchPosition` as callable functions on it.
+    // Calling one there throws a synchronous TypeError ("... is not a
+    // function") that happens outside any try/catch here, and since this
+    // fires from a passive effect it takes the whole React tree down with
+    // it. Checking the method is actually a function (not just that the
+    // `geolocation` property exists) is what iOS needs; other platforms
+    // never hit this branch since their `geolocation` object is either
+    // fully real or entirely absent.
+    if (
+      typeof navigator === "undefined" ||
+      !("geolocation" in navigator) ||
+      typeof navigator.geolocation?.getCurrentPosition !== "function"
+    ) {
+      setState("unsupported");
+      return true;
+    }
+    if (typeof window === "undefined" || !window.isSecureContext) { setState("insecure"); return true; }
     return false;
   }, []);
 
   const stop = useCallback(() => {
-    if (id.current !== null) navigator.geolocation.clearWatch(id.current);
+    if (id.current !== null) {
+      try { navigator.geolocation?.clearWatch?.(id.current); } catch { /* nothing to clean up */ }
+    }
     id.current = null;
     setFix(null);
     setState("idle");
@@ -182,37 +202,57 @@ export function useGeolocation() {
   const once = useCallback(() => {
     if (blocked()) return;
     setState("requesting");
-    navigator.geolocation.getCurrentPosition(
-      ok,
-      (e) => {
-        // Permission actually denied (code 1) -> no point retrying, report it as-is.
-        // Anything else (timeout / position unavailable, common on iOS indoors)
-        // -> one retry with a coarser, longer-lived request before giving up.
-        if (e.code === 1) { err(e); return; }
-        navigator.geolocation.getCurrentPosition(ok, err, { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 });
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
-    );
+    try {
+      navigator.geolocation.getCurrentPosition(
+        ok,
+        (e) => {
+          // Permission actually denied (code 1) -> no point retrying, report it as-is.
+          // Anything else (timeout / position unavailable, common on iOS indoors)
+          // -> one retry with a coarser, longer-lived request before giving up.
+          if (e.code === 1) { err(e); return; }
+          try {
+            navigator.geolocation.getCurrentPosition(ok, err, { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 });
+          } catch { setState("unavailable"); }
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+      );
+    } catch {
+      // Defends against browsers that pass the `blocked()` check but still
+      // throw synchronously when the method is actually invoked.
+      setState("unavailable");
+    }
   }, [blocked, ok, err]);
 
   const watch = useCallback(() => {
     if (blocked()) return;
-    if (id.current !== null) navigator.geolocation.clearWatch(id.current);
+    if (id.current !== null) {
+      try { navigator.geolocation.clearWatch(id.current); } catch { /* nothing to clean up */ }
+    }
     setState("requesting");
     let fellBack = false;
-    id.current = navigator.geolocation.watchPosition(
-      ok,
-      (e) => {
-        if (e.code === 1 || fellBack) { err(e); return; }
-        fellBack = true;
-        if (id.current !== null) navigator.geolocation.clearWatch(id.current);
-        id.current = navigator.geolocation.watchPosition(ok, err, { enableHighAccuracy: false, timeout: 25000, maximumAge: 10000 });
-      },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 },
-    );
+    try {
+      id.current = navigator.geolocation.watchPosition(
+        ok,
+        (e) => {
+          if (e.code === 1 || fellBack) { err(e); return; }
+          fellBack = true;
+          try {
+            if (id.current !== null) navigator.geolocation.clearWatch(id.current);
+            id.current = navigator.geolocation.watchPosition(ok, err, { enableHighAccuracy: false, timeout: 25000, maximumAge: 10000 });
+          } catch { setState("unavailable"); }
+        },
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 },
+      );
+    } catch {
+      setState("unavailable");
+    }
   }, [blocked, ok, err]);
 
-  useEffect(() => () => { if (id.current !== null) navigator.geolocation.clearWatch(id.current); }, []);
+  useEffect(() => () => {
+    if (id.current !== null) {
+      try { navigator.geolocation?.clearWatch?.(id.current); } catch { /* nothing to clean up */ }
+    }
+  }, []);
   return { state, fix, once, watch, stop };
 }
 
@@ -227,19 +267,32 @@ export function useGeolocation() {
  */
 export function getCurrentFix(): Promise<{ ok: true; fix: Fix } | { ok: false; state: GeoState }> {
   return new Promise((resolve) => {
-    if (typeof navigator === "undefined" || !("geolocation" in navigator)) { resolve({ ok: false, state: "unsupported" }); return; }
+    if (
+      typeof navigator === "undefined" ||
+      !("geolocation" in navigator) ||
+      typeof navigator.geolocation?.getCurrentPosition !== "function"
+    ) {
+      resolve({ ok: false, state: "unsupported" });
+      return;
+    }
     if (typeof window === "undefined" || !window.isSecureContext) { resolve({ ok: false, state: "insecure" }); return; }
     const onOk = (p: GeolocationPosition) =>
       resolve({ ok: true, fix: { lat: p.coords.latitude, lng: p.coords.longitude, accuracy: Number.isFinite(p.coords.accuracy) ? p.coords.accuracy : null, at: p.timestamp } });
     const onErr = (e: GeolocationPositionError) => resolve({ ok: false, state: e.code === 1 ? "denied" : e.code === 2 ? "unavailable" : "timeout" });
-    navigator.geolocation.getCurrentPosition(
-      onOk,
-      (e) => {
-        if (e.code === 1) { onErr(e); return; }
-        navigator.geolocation.getCurrentPosition(onOk, onErr, { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 });
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
-    );
+    try {
+      navigator.geolocation.getCurrentPosition(
+        onOk,
+        (e) => {
+          if (e.code === 1) { onErr(e); return; }
+          try {
+            navigator.geolocation.getCurrentPosition(onOk, onErr, { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 });
+          } catch { resolve({ ok: false, state: "unavailable" }); }
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+      );
+    } catch {
+      resolve({ ok: false, state: "unavailable" });
+    }
   });
 }
 
