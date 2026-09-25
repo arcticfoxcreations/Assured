@@ -3,13 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AlertTriangle, ArrowRight, ExternalLink, Info, Loader2, Phone, Send, X } from "lucide-react";
-import { useSaved } from "@/lib/travel/client";
+import { AlertTriangle, ArrowRight, ExternalLink, Info, Loader2, MapPin, Navigation, Phone, Send, X } from "lucide-react";
+import { api, getCurrentFix, useSaved } from "@/lib/travel/client";
 import { askMewvi } from "@/lib/mewvi/client";
 import { contextSuggestions, pageContext } from "@/lib/mewvi/context";
 import { DISCLAIMER } from "@/lib/mewvi/flows";
+import { classify } from "@/lib/mewvi/intents";
 import { callConfirmation } from "@/lib/mewvi/tools";
-import type { Block, Confirmation, HelplineRef, MewviReply } from "@/lib/mewvi/types";
+import { refsFor, routeLink } from "@/lib/mewvi/catalog";
+import { detectNearbyCategory, lookupNearby, type NearbyCategory, type NearbyResult } from "@/lib/mewvi/nearby";
+import type { Block, Confirmation, HelplineRef, LinkRef, MewviReply } from "@/lib/mewvi/types";
 import { MewviAvatar } from "@/components/mewvi/MewviAvatar";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +29,42 @@ const newId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 const isInternal = (h: string) => h.startsWith("/") && !h.startsWith("//");
 const isHttps = (h: string) => /^https:\/\//i.test(h);
 const linkCls = "flex items-center justify-between gap-2 rounded-xl border border-border bg-background px-3 py-2 text-sm hover:bg-surface-2";
+
+/* ───────────── nearby-help lookup (client-only: real location, real OSM data) ───────────── */
+
+const textBlock = (t: string): Block => ({ type: "text", text: t });
+
+/** A reply this component builds itself, from real lookups — never routed through the server's hallucination guard because there's nothing here to hallucinate: it's either the person's own device location or a verified /api/resources result. */
+function localReply(blocks: Block[], suggestions: string[] = []): MewviReply {
+  return { intent: "find_nearby_help", engine: "local", ai: "off", blocks, confirmations: [], suggestions };
+}
+
+function lookingReply(category: NearbyCategory): MewviReply {
+  return localReply([textBlock(`Let me check what's nearby for ${category.label}…`)]);
+}
+
+function askLocationReply(category: NearbyCategory, reason: string): MewviReply {
+  return localReply([textBlock(`${reason} Tell me your area, locality or city — like you would on Google Maps — and I'll look for the nearest ${category.label} there.`)]);
+}
+
+function placesReply(category: NearbyCategory, result: Extract<NearbyResult, { ok: true }>): MewviReply {
+  const blocks: Block[] = [];
+  if (result.places.length === 0) {
+    blocks.push(textBlock(`I didn't find a mapped ${category.label} within 3 km on OpenStreetMap. Coverage can be incomplete — try the Safety Map for a wider search.`));
+    const links = [routeLink("safety-map-area"), routeLink("safety-map")].filter((x): x is LinkRef => Boolean(x));
+    if (links.length) blocks.push({ type: "links", items: links });
+  } else {
+    blocks.push(textBlock(`Nearest mapped ${category.label}${result.places.length > 1 ? "s" : ""} — from OpenStreetMap, so always confirm when it matters:`));
+    blocks.push({ type: "places", label: category.label, items: result.places });
+  }
+  if (category.helplineIds?.length) blocks.push({ type: "helplines", items: refsFor(category.helplineIds) });
+  blocks.push({ type: "notice", tone: "info", text: "If you need help right now, don't search — call 112." });
+  return localReply(blocks, ["Share my location", "Find the safest route"]);
+}
+
+function errorReply(message: string): MewviReply {
+  return localReply([textBlock(message)]);
+}
 
 /* ───────────── confirmation (the only route to a call / share / check-in) ───────────── */
 
@@ -120,6 +159,26 @@ function BlockView({ b, onNavigate }: { b: Block; onNavigate: () => void }) {
       );
     case "helplines":
       return <HelplineCards items={b.items} />;
+    case "places":
+      return (
+        <ul className="space-y-1.5">
+          {b.items.map((p) => (
+            <li key={p.id} className="flex items-center justify-between gap-2 rounded-xl border border-border bg-background px-3 py-2 text-sm">
+              <span className="flex min-w-0 items-start gap-2">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-muted" aria-hidden="true" />
+                <span className="min-w-0">
+                  <span className="block truncate font-medium">{p.name}</span>
+                  <span className="block text-xs text-muted">{p.distanceLabel} away</span>
+                </span>
+              </span>
+              <a href={p.mapsHref} target="_blank" rel="noopener noreferrer" className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-border px-2.5 py-1.5 text-xs font-medium hover:bg-surface-2">
+                <Navigation className="h-3.5 w-3.5" aria-hidden="true" />
+                Directions
+              </a>
+            </li>
+          ))}
+        </ul>
+      );
     case "links":
       return (
         <ul className="space-y-1.5">
@@ -193,9 +252,43 @@ export function MewviPanel({
   const activeJourney = Boolean(journey && journey.status === "active");
   const [value, setValue] = useState("");
   const [busy, setBusy] = useState(false);
+  // Set right after Mewvi asks "tell me your area" — the NEXT message is
+  // treated as a place name for this category instead of a fresh question,
+  // unless it clearly reclassifies as something else (see send()).
+  const [pendingCategory, setPendingCategory] = useState<NearbyCategory | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const chips = contextSuggestions(pageContext(pathname).domain);
+  const domain = pageContext(pathname).domain;
+
+  async function runGeolocation(category: NearbyCategory) {
+    const fixResult = await getCurrentFix();
+    if (fixResult.ok) {
+      const result = await lookupNearby(fixResult.fix, category);
+      setTurns((t) => [...t, { id: newId(), role: "mewvi", reply: result.ok ? placesReply(category, result) : errorReply(result.error) }]);
+      return;
+    }
+    const reason =
+      fixResult.state === "denied"
+        ? "I can't read your location — access is off for this site, and only you can turn that back on in your browser or phone settings."
+        : fixResult.state === "unsupported" || fixResult.state === "insecure"
+          ? "I can't read your location here."
+          : "I couldn't get a location fix just now.";
+    setPendingCategory(category);
+    setTurns((t) => [...t, { id: newId(), role: "mewvi", reply: askLocationReply(category, reason) }]);
+  }
+
+  async function runLocationText(placeText: string, category: NearbyCategory) {
+    const g = await api.geocode(placeText);
+    const place = g.ok ? g.data?.results?.[0] : undefined;
+    if (!place) {
+      setPendingCategory(category);
+      setTurns((t) => [...t, { id: newId(), role: "mewvi", reply: errorReply(`I couldn't find "${placeText}" — try a locality, landmark or city name instead.`) }]);
+      return;
+    }
+    const result = await lookupNearby({ lat: place.lat, lng: place.lng }, category);
+    setTurns((t) => [...t, { id: newId(), role: "mewvi", reply: result.ok ? placesReply(category, result) : errorReply(result.error) }]);
+  }
 
   useEffect(() => {
     // Autofocus only on devices with a real keyboard. On touch devices,
@@ -213,7 +306,32 @@ export function MewviPanel({
     setValue("");
     setTurns((t) => [...t, { id: newId(), role: "user", text: message }]);
     setBusy(true);
+
+    // Mewvi just asked "tell me your area" — treat this message as that place,
+    // unless it clearly reads as an unrelated request instead (danger, a
+    // different tool, etc.), in which case fall through to a normal answer.
+    if (pendingCategory) {
+      const category = pendingCategory;
+      setPendingCategory(null);
+      if (classify(message, domain).confidence < 0.6) {
+        await runLocationText(message, category);
+        setBusy(false);
+        return;
+      }
+    }
+
     const reply = await askMewvi({ message, pathname, activeJourney });
+
+    if (reply.intent === "find_nearby_help") {
+      const category = detectNearbyCategory(message);
+      if (category) {
+        setTurns((t) => [...t, { id: newId(), role: "mewvi", reply: lookingReply(category) }]);
+        await runGeolocation(category);
+        setBusy(false);
+        return;
+      }
+    }
+
     setTurns((t) => [...t, { id: newId(), role: "mewvi", reply }]);
     setBusy(false);
   }
