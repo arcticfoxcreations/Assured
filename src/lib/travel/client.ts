@@ -130,8 +130,32 @@ export const guardianUrl = (token: string) => `${window.location.origin}/guardia
 export type GeoState = "idle" | "requesting" | "active" | "denied" | "unavailable" | "timeout" | "unsupported" | "insecure";
 
 /**
+ * True on iPhone/iPad (Safari and any browser there, since they all use WebKit).
+ * iPadOS 13+ reports its UA as "Macintosh", so a real Mac is told apart by the
+ * lack of touch points. Used only to tailor on-screen guidance text — iOS and
+ * desktop browsers expose permission/settings in different places.
+ */
+export function isIOS(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  if (/iPad|iPhone|iPod/.test(ua)) return true;
+  return navigator.platform === "MacIntel" && typeof navigator.maxTouchPoints === "number" && navigator.maxTouchPoints > 1;
+}
+
+/**
  * Location is only ever read after the caller invokes once() or watch() from
  * a user action. stop() clears the watch AND forgets the last fix.
+ *
+ * iOS note: a website (including one added to the Home Screen) can only ever
+ * trigger the standard browser permission prompt via getCurrentPosition /
+ * watchPosition — there is no web API that opens the iOS Settings app or
+ * force-enables Location Services from JavaScript. What iOS *does* do a lot
+ * is fail a high-accuracy GPS fix indoors (timeout / "position unavailable")
+ * even though location is perfectly available at lower accuracy, so both
+ * calls below now retry once at low accuracy before giving up — this is the
+ * actual "not detecting on iPhone" fix. The other half of that fix is in
+ * GeoProblem.tsx, which now shows the real iOS Settings path when permission
+ * has already been denied, instead of the Chrome/Android "lock icon" text.
  */
 export function useGeolocation() {
   const [state, setState] = useState<GeoState>("idle");
@@ -160,14 +184,34 @@ export function useGeolocation() {
   const once = useCallback(() => {
     if (blocked()) return;
     setState("requesting");
-    navigator.geolocation.getCurrentPosition(ok, err, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+    navigator.geolocation.getCurrentPosition(
+      ok,
+      (e) => {
+        // Permission actually denied (code 1) -> no point retrying, report it as-is.
+        // Anything else (timeout / position unavailable, common on iOS indoors)
+        // -> one retry with a coarser, longer-lived request before giving up.
+        if (e.code === 1) { err(e); return; }
+        navigator.geolocation.getCurrentPosition(ok, err, { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 });
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+    );
   }, [blocked, ok, err]);
 
   const watch = useCallback(() => {
     if (blocked()) return;
     if (id.current !== null) navigator.geolocation.clearWatch(id.current);
     setState("requesting");
-    id.current = navigator.geolocation.watchPosition(ok, err, { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 });
+    let felBack = false;
+    id.current = navigator.geolocation.watchPosition(
+      ok,
+      (e) => {
+        if (e.code === 1 || felBack) { err(e); return; }
+        felBack = true;
+        if (id.current !== null) navigator.geolocation.clearWatch(id.current);
+        id.current = navigator.geolocation.watchPosition(ok, err, { enableHighAccuracy: false, timeout: 25000, maximumAge: 10000 });
+      },
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 },
+    );
   }, [blocked, ok, err]);
 
   useEffect(() => () => { if (id.current !== null) navigator.geolocation.clearWatch(id.current); }, []);
