@@ -41,10 +41,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(STORAGE_KEY) as
-      | ThemePreference
-      | null;
-    const initial = stored ?? "system";
+    // Storage access can throw (SecurityError) under some browser privacy
+    // policies / storage-partitioning states — most other reads in this app
+    // already degrade silently on that; this one didn't, so a blocked read
+    // here could crash the whole tree on first paint of every page.
+    let stored: ThemePreference | null = null;
+    try {
+      stored = window.localStorage.getItem(STORAGE_KEY) as ThemePreference | null;
+    } catch {
+      /* private mode / storage blocked: fall back to system preference */
+    }
+    const initial = stored === "light" || stored === "dark" ? stored : "system";
     setThemeState(initial);
     const resolved = initial === "system" ? getSystemTheme() : initial;
     setResolvedTheme(resolved);
@@ -66,7 +73,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = useCallback((next: ThemePreference) => {
     setThemeState(next);
-    window.localStorage.setItem(STORAGE_KEY, next);
+    try {
+      window.localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      /* private mode / quota / blocked storage: preference just won't persist */
+    }
     const resolved = next === "system" ? getSystemTheme() : next;
     setResolvedTheme(resolved);
     applyTheme(resolved);
