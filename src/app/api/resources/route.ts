@@ -11,7 +11,7 @@ const Q = z.object({
 });
 const cache = new Map<string, { at: number; data: Resource[] }>();
 
-/** Police stations, hospitals and fire stations from OpenStreetMap (via Overpass). */
+/** Police stations, hospitals, fire stations, pharmacies, petrol pumps and ATMs from OpenStreetMap (via Overpass). */
 export async function GET(req: Request) {
   if (!rateLimit(`res:${clientIp(req)}`, 20, 60_000)) return json({ error: "rate_limited" }, 429);
   const p = Q.safeParse(Object.fromEntries(new URL(req.url).searchParams));
@@ -23,7 +23,7 @@ export async function GET(req: Request) {
   const hit = cache.get(key);
   if (hit && Date.now() - hit.at < 3_600_000) return json({ resources: hit.data });
 
-  const q = `[out:json][timeout:20];nwr["amenity"~"^(police|hospital|fire_station)$"](${south},${west},${north},${east});out center 200;`;
+  const q = `[out:json][timeout:20];nwr["amenity"~"^(police|hospital|fire_station|pharmacy|fuel|atm)$"](${south},${west},${north},${east});out center 200;`;
   try {
     const r = await fetch("https://overpass-api.de/api/interpreter", {
       method: "POST",
