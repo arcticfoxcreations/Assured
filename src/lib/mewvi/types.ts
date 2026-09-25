@@ -103,13 +103,23 @@ export interface PathStep {
   external?: boolean;
 }
 
+/** One real, verified-source nearby place (OpenStreetMap via /api/resources) — never invented. */
+export interface NearbyPlaceRef {
+  id: string;
+  name: string;
+  distanceLabel: string;
+  /** Google Maps link built from the place's real coordinates. */
+  mapsHref: string;
+}
+
 export type Block =
   | { type: "text"; text: string }
   | { type: "notice"; tone: "info" | "warn" | "urgent"; text: string }
   | { type: "steps"; title?: string; steps: string[] }
   | { type: "helplines"; items: HelplineRef[] }
   | { type: "links"; items: LinkRef[] }
-  | { type: "path"; title: string; steps: PathStep[] };
+  | { type: "path"; title: string; steps: PathStep[] }
+  | { type: "places"; label: string; items: NearbyPlaceRef[] };
 
 /** A sensitive action Mewvi may only PROPOSE. The person must tap Yes. */
 export interface Confirmation {
