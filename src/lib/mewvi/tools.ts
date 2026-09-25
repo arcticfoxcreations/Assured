@@ -181,20 +181,29 @@ export function searchHelplines({ query = "", topic, wantsCall = false, limit = 
 
 /* ───────────── nearby help ───────────── */
 
-/** findNearbyHelp(): points at Area Safety. Mewvi itself never reads or sends a location. */
+/**
+ * findNearbyHelp(): the generic prompt shown when this pure, server-safe
+ * function can't tell which category was meant (e.g. "find me some help").
+ * This function never reads a location — it stays identical on the server
+ * and fully offline. When the message DOES name a category — "petrol pump
+ * near me", "nearest pharmacy", "ATM nearby" — the browser-only Mewvi panel
+ * (src/components/mewvi/MewviPanel.tsx) intercepts this intent itself,
+ * asks the browser for a location (with the normal permission prompt) or
+ * asks the person to type their area, and shows real OpenStreetMap results.
+ */
 export function findNearbyHelp(): ToolResult {
   return {
     found: true,
     blocks: [
       text(
-        "I can't see where you are, and I never read your location. The Area Safety page shows police stations, hospitals and fire stations around an area you choose. Its map data comes from OpenStreetMap, so it's community-mapped — check before you rely on it."
+        "I can look up what's actually nearby for police, hospitals, fire stations, pharmacies, petrol pumps and ATMs — just say which, e.g. \"pharmacy near me\" or \"nearest petrol pump\". I'll ask your browser for your location first; if that's off, tell me your area and I'll search from there instead."
       ),
       links([routeLink("safety-map-area"), routeLink("safety-map")]),
       { type: "helplines", items: refsFor(["erss-112"]) },
       { type: "notice", tone: "info", text: "If you need help right now, don't search — call 112." },
     ],
     confirmations: [],
-    suggestions: ["Share my location", "Find the safest route"],
+    suggestions: ["Police near me", "Pharmacy near me", "Petrol pump near me"],
   };
 }
 
