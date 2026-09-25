@@ -48,7 +48,7 @@ export interface PublicReport extends LatLng {
 
 export interface Resource extends LatLng {
   id: string;
-  kind: "police" | "hospital" | "fire_station";
+  kind: "police" | "hospital" | "fire_station" | "pharmacy" | "fuel" | "atm";
   name: string;
 }
 
