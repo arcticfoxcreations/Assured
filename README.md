@@ -185,4 +185,4 @@ Things that need a native app rather than a browser, and are marked
 
 ---
 
-<p align="center"><i>Built for a hackathon by a student, for everyday safety.</i></p>
+<p align="center"><i>Safety that stays with you, wherever you go.</i></p>
