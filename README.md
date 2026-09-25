@@ -27,11 +27,13 @@
 - [Why ASSURED](#why-assured)
 - [Features](#features)
 - [Tech stack](#tech-stack)
+- [Architecture](#architecture)
 - [Route map](#route-map)
 - [Project structure](#project-structure)
 - [Getting started](#getting-started)
 - [Environment variables](#environment-variables)
 - [Deployment](#deployment)
+- [CI/CD pipeline](#cicd-pipeline)
 - [What's real vs. a placeholder](#whats-real-vs-a-placeholder)
 - [Security & privacy](#security--privacy)
 - [Roadmap](#roadmap)
@@ -70,6 +72,76 @@ as a placeholder — nothing is faked to look more finished than it is.
 - **Data:** Supabase/Postgres (optional — falls back to in-memory storage when unset)
 - **Integrations (all optional):** openrouteservice (routes), Resend (email alerts), Twilio (SMS alerts), Gemini (Mewvi's language layer)
 - **Deployment:** Vercel
+
+## Architecture
+
+ASSURED is **one Next.js app, one repo, one deployment** — not a
+collection of microservices. "Ecosystem" refers to how the *product*
+feels (every domain has its own real page and URL, like Wikipedia),
+not to how it's deployed. Every box below runs inside the same Next.js
+build; the only things that live outside it are the optional external
+services on the right, and every one of those is feature-detected and
+degrades gracefully when unset.
+
+```mermaid
+flowchart TD
+    subgraph Client["Browser / PWA — iPhone · Android · Desktop"]
+        UI["App Router UI<br/>Client Components"]
+        LocalState["On-device storage<br/>(localStorage — journey, evidence, theme)"]
+        WebAPIs["Feature-detected Web APIs<br/>Geolocation · Battery · Web Share"]
+    end
+
+    subgraph Server["Vercel — Edge & Node runtime"]
+        RSC["Server Components<br/>(pages, layouts, metadata)"]
+        API["Route Handlers<br/>/api/*"]
+        Mewvi["Mewvi engine<br/>intent classifier → guardrails → reply"]
+    end
+
+    subgraph Data["Data layer"]
+        DB[("Supabase / Postgres<br/>optional")]
+        Mem[("In-memory store<br/>fallback when DB unset")]
+    end
+
+    subgraph External["External integrations — all optional"]
+        ORS["openrouteservice<br/>(routing)"]
+        Resend["Resend<br/>(email alerts)"]
+        Twilio["Twilio<br/>(SMS alerts)"]
+        Gemini["Gemini<br/>(Mewvi language layer)"]
+        OSM["OpenStreetMap<br/>(tiles + geocoding)"]
+    end
+
+    UI -- fetch --> API
+    UI --> LocalState
+    UI --> WebAPIs
+    RSC --> UI
+    API --> Mewvi
+    Mewvi -.optional.-> Gemini
+    API --> DB
+    API -. DB unset .-> Mem
+    API --> ORS
+    API --> Resend
+    API --> Twilio
+    API --> OSM
+```
+
+**Layers, top to bottom:**
+
+| Layer | Responsibility |
+|---|---|
+| **Client Components** (`"use client"`) | Anything interactive or device-facing — theme toggle, geolocation, the Mewvi panel, live tracking. Kept as small and low as possible in the tree; most of the app is server-rendered. |
+| **Server Components & layouts** | Route shells, metadata, and static content, rendered on the server for fast first paint and no client JS cost. |
+| **Route Handlers** (`src/app/api/**`) | The only code allowed to touch secrets (`src/lib/env.ts` → `serverEnv`) or the database. Every mutating route is rate-limited and validates its input with Zod. |
+| **Mewvi engine** (`src/lib/mewvi/**`) | Rule-based intent classification and a catalog of verified in-app answers by default; Gemini only ever *rewrites* an already-approved reply and is never given free rein to invent facts — see [`AI_SAFETY.md`](./AI_SAFETY.md). |
+| **Data layer** | Supabase/Postgres when configured, with Row-Level Security and no public policies. With no database configured, the same API surface runs on an in-memory store so the whole app — including journeys and guardian tracking — still works end to end for a local demo. |
+| **External integrations** | openrouteservice, Resend, Twilio, Gemini, and OpenStreetMap. Each is read from `serverEnv`, feature-detected, and the UI states plainly when one isn't configured rather than pretending it is. |
+
+**Why one app instead of separate services:** a hackathon judge (or a
+first-time contributor) should be able to clone one repo, run one
+`npm install`, and see the whole product — not stitch together five
+deployments. Splitting by *route*, not by *service*, is what gives
+ASSURED its Wikipedia-like feel (`/travel/guardian`, `/report/cyber`,
+etc. are all real, deep-linkable, independently refreshable pages)
+without any of the operational cost of actual microservices.
 
 ## Route map
 
@@ -142,6 +214,29 @@ server-side.
 This is a static-export-incompatible app (App Router + API routes), so
 GitHub Pages can't host it as-is — use Vercel, Netlify, or another host
 with first-class Next.js support.
+
+## CI/CD pipeline
+
+[![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+<br/><sub>Replace `OWNER/REPO` above with this repo's GitHub path once pushed, so the badge (and the link) resolve.</sub>
+
+A GitHub Actions workflow at [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)
+runs on every push and pull request to `main`:
+
+```
+checkout → npm ci → type check (tsc) → lint → unit tests → production build
+```
+
+It needs no secrets and injects none — the app is designed to build and
+run with every integration unset (that's the whole point of `serverEnv`
+in [`src/lib/env.ts`](./src/lib/env.ts)), so CI exercises exactly the
+same "nothing configured" path a fresh clone does. A red check on a PR
+means one of those four steps failed; open the run's log to see which.
+
+**Continuous deployment** is handled by Vercel's own GitHub
+integration (see [Deployment](#deployment) above) rather than a step in
+this workflow — Vercel builds and deploys independently on every push,
+with its own preview URL per pull request.
 
 ## What's real vs. a placeholder
 
