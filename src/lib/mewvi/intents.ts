@@ -202,10 +202,10 @@ const RULES: Rule[] = [
   {
     intent: "find_nearby_help",
     strong: [
-      /\b(nearest|nearby|near me|closest|around me|near here|close to me)\b.{0,30}\b(police|hospital|clinic|fire station|police station|help|ambulance|safe place|shelter|pharmacy)\b/,
-      /\b(police station|hospital|fire station|safe place|shelter)\b.{0,25}\b(nearest|nearby|near me|closest|around me|near here)\b/,
+      /\b(nearest|nearby|near me|closest|around me|near here|close to me)\b.{0,30}\b(police|hospital|clinic|fire station|police station|help|ambulance|safe place|shelter|pharmacy|chemist|medical store|petrol(?: pump)?|fuel station|gas station|atm|cash machine)\b/,
+      /\b(police station|hospital|fire station|safe place|shelter|pharmacy|chemist|petrol pump|fuel station|atm)\b.{0,25}\b(nearest|nearby|near me|closest|around me|near here)\b/,
       /\bwhere (?:is|are|can i find) (?:the )?(?:nearest|nearby|closest) \w+/,
-      /\bfind (?:me )?(?:nearby |nearest )?(?:help|police|hospital)\b/,
+      /\bfind (?:me )?(?:nearby |nearest )?(?:help|police|hospital|pharmacy|petrol|fuel|atm)\b/,
     ],
     weak: [/\b(nearby|nearest|near me)\b/],
   },
