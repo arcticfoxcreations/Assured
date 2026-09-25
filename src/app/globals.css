@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter,
+    "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
+
+  /* ASSURED design tokens — warm sage / cream palette
+     (RGB triplets so Tailwind can apply alpha, e.g. bg-surface/70) */
+  --color-bg: 248 247 243;
+  --color-surface: 255 254 250;
+  --color-surface-2: 237 243 235;
+  --color-border: 226 232 222;
+  --color-fg: 39 51 48;
+  --color-muted: 109 121 115;
+  --color-primary: 82 116 97;
+  --color-primary-fg: 250 250 246;
+  --color-emergency: 178 58 48;
+  --color-emergency-fg: 255 255 255;
+  --color-safe: 63 106 82;
+  --color-accent: 217 158 159;
+  --color-accent-fg: 39 51 48;
+  --color-cream: 246 240 229;
+}
+
+.dark {
+  --color-bg: 23 29 27;
+  --color-surface: 38 49 43;
+  --color-surface-2: 38 56 46;
+  --color-border: 51 63 56;
+  --color-fg: 237 241 235;
+  --color-muted: 172 183 173;
+  --color-primary: 156 190 164;
+  --color-primary-fg: 20 26 23;
+  --color-emergency: 239 107 98;
+  --color-emergency-fg: 33 12 10;
+  --color-safe: 150 205 168;
+  --color-accent: 223 167 166;
+  --color-accent-fg: 237 241 235;
+  --color-cream: 58 55 46;
+}
+
+* {
+  border-color: rgb(var(--color-border));
+}
+
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+body {
+  background-color: rgb(var(--color-bg));
+  color: rgb(var(--color-fg));
+  font-family: var(--font-sans);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--color-primary));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background-color: rgb(var(--color-primary) / 0.22);
+}

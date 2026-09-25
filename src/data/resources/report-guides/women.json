@@ -1,0 +1,61 @@
+{
+  "id": "women",
+  "title": "Women's Safety",
+  "summary": "Support and official channels for women facing harassment, violence or abuse.",
+  "whatToDoNow": [
+    "If you are in immediate physical danger, call 112.",
+    "Move to a public or well-lit place and tell someone you trust where you are.",
+    "Call 181 for support, guidance and referrals.",
+    "Note the date, time, place and what happened as soon as you safely can."
+  ],
+  "whoToContact": [
+    "112, for immediate danger",
+    "181, Women Helpline",
+    "15100, National Legal Aid Helpline, for free legal advice"
+  ],
+  "whereToReport": [
+    "SHe-Box (shebox.wcd.gov.in), for workplace harassment",
+    "National Commission for Women (ncw.gov.in)",
+    "National Cyber Crime Reporting Portal (cybercrime.gov.in) for online harassment",
+    "Nearest police station, to file a complaint"
+  ],
+  "whatInformationToKeep": [
+    "Dates, times and locations of each incident",
+    "Names or descriptions of everyone involved, including witnesses",
+    "Exact wording of threatening or harassing messages",
+    "Any earlier complaints and their outcome"
+  ],
+  "whatEvidenceToPreserve": [
+    "Screenshots of messages, calls or social media activity",
+    "Voice notes or recordings where legally permissible",
+    "Medical records if there was any physical harm"
+  ],
+  "officialLinks": [
+    {
+      "label": "SHe-Box",
+      "url": "https://shebox.wcd.gov.in",
+      "sourceId": "shebox"
+    },
+    {
+      "label": "National Commission for Women",
+      "url": "https://ncw.gov.in",
+      "sourceId": "ncw"
+    },
+    {
+      "label": "National Cyber Crime Reporting Portal",
+      "url": "https://cybercrime.gov.in",
+      "sourceId": "ncrp"
+    }
+  ],
+  "helplineIds": [
+    "erss-112",
+    "women-181",
+    "legal-aid-15100",
+    "ncw-complaint",
+    "shebox-portal"
+  ],
+  "relatedRoutes": [
+    "report-cyber",
+    "children"
+  ]
+}

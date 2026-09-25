@@ -1,0 +1,52 @@
+{
+  "id": "cyber",
+  "title": "Cybercrime & Online Fraud",
+  "summary": "For scams, hacked accounts and other crimes with a digital trail.",
+  "whatToDoNow": [
+    "If money is being moved right now (UPI, card, net banking), call 1930 immediately. Speed matters for freezing funds.",
+    "Do not delete the messages, emails, app data or call logs involved.",
+    "Change passwords on the affected account and any account that reuses the same password.",
+    "If a device may be compromised, disconnect it from Wi-Fi and mobile data until you have reviewed it."
+  ],
+  "whoToContact": [
+    "1930, National Cybercrime Reporting Helpline (urgent financial fraud)",
+    "Your bank's official fraud number, taken from your card or bank app, not from the suspicious message",
+    "Your local police station or cyber cell if you need a formal complaint"
+  ],
+  "whereToReport": [
+    "File a detailed complaint on the National Cyber Crime Reporting Portal (cybercrime.gov.in)",
+    "Use Sanchar Saathi if a phone or SIM is involved"
+  ],
+  "whatInformationToKeep": [
+    "Exact date and time of the incident",
+    "Transaction IDs, UPI reference numbers or account numbers involved",
+    "The sender's phone number, email, UPI ID or website address",
+    "Names of apps involved and how they were installed"
+  ],
+  "whatEvidenceToPreserve": [
+    "Screenshots of messages, emails or websites",
+    "Screen recordings of the transaction flow, if possible",
+    "Bank SMS and email alerts for the transaction"
+  ],
+  "officialLinks": [
+    {
+      "label": "National Cyber Crime Reporting Portal",
+      "url": "https://cybercrime.gov.in",
+      "sourceId": "ncrp"
+    },
+    {
+      "label": "Sanchar Saathi",
+      "url": "https://sancharsaathi.gov.in",
+      "sourceId": "sancharsaathi"
+    }
+  ],
+  "helplineIds": [
+    "cybercrime-1930",
+    "ncrp-portal",
+    "sancharsaathi"
+  ],
+  "relatedRoutes": [
+    "report-financial-fraud",
+    "evidence"
+  ]
+}

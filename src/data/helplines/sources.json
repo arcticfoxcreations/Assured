@@ -1,0 +1,117 @@
+{
+  "note": "Every helpline entry references a source here with publisher, URL and a verification date, carried forward from the project's research record.",
+  "sources": [
+    {
+      "id": "erss",
+      "publisher": "Ministry of Home Affairs, Government of India",
+      "title": "Emergency Response Support System (ERSS) — 112",
+      "url": "https://112.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "i4c-1930",
+      "publisher": "Indian Cybercrime Coordination Centre (I4C), Ministry of Home Affairs",
+      "title": "National Cybercrime Reporting Helpline — 1930",
+      "url": "https://cybercrime.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "ncrp",
+      "publisher": "Indian Cybercrime Coordination Centre (I4C), Ministry of Home Affairs",
+      "title": "National Cyber Crime Reporting Portal (NCRP)",
+      "url": "https://cybercrime.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "wcd-181",
+      "publisher": "Ministry of Women and Child Development — Mission Shakti",
+      "title": "Women Helpline — 181",
+      "url": "https://missionshakti.wcd.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "childline-1098",
+      "publisher": "Ministry of Women and Child Development / CHILDLINE India Foundation",
+      "title": "Child Helpline — 1098",
+      "url": "https://missionvatsalya.wcd.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "telemanas",
+      "publisher": "Ministry of Health and Family Welfare",
+      "title": "Tele MANAS — 24x7 tele mental health helpline",
+      "url": "https://telemanas.mohfw.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "nalsa-15100",
+      "publisher": "National Legal Services Authority (NALSA)",
+      "title": "National Legal Aid Helpline — 15100",
+      "url": "https://nalsa.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "railmadad-139",
+      "publisher": "Indian Railways",
+      "title": "Rail Madad — integrated helpline 139",
+      "url": "https://railmadad.indianrailways.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "nhai-1033",
+      "publisher": "National Highways Authority of India (NHAI)",
+      "title": "National Highway Helpline — 1033",
+      "url": "https://nhai.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "elderline-14567",
+      "publisher": "Department of Social Justice and Empowerment",
+      "title": "Elderline — National Helpline for Senior Citizens 14567",
+      "url": "https://elderline.dosje.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "nch-consumer",
+      "publisher": "Department of Consumer Affairs",
+      "title": "National Consumer Helpline — 1800-11-4000",
+      "url": "https://consumerhelpline.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "shebox",
+      "publisher": "Ministry of Women and Child Development",
+      "title": "SHe-Box — Sexual Harassment Electronic Box (POSH Act, 2013)",
+      "url": "https://shebox.wcd.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "ncw",
+      "publisher": "National Commission for Women (NCW)",
+      "title": "National Commission for Women — complaint registration",
+      "url": "https://ncw.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "sancharsaathi",
+      "publisher": "Department of Telecommunications",
+      "title": "Sanchar Saathi — block/trace a lost or stolen phone, check SIMs in your name",
+      "url": "https://sancharsaathi.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "ndma",
+      "publisher": "National Disaster Management Authority (NDMA)",
+      "title": "National Disaster Management Authority — Contact Us",
+      "url": "https://ndma.gov.in",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "tourism",
+      "publisher": "Ministry of Tourism, Government of India",
+      "title": "24x7 Multilingual Tourist Helpline",
+      "url": "https://tourism.gov.in",
+      "verifiedOn": "2026-09-24"
+    }
+  ]
+}

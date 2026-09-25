@@ -1,0 +1,185 @@
+{
+  "note": "State/UT list. No state-specific helpline entries verified yet against an official state source, so each state shows an honest 'coming later' status. National entries apply everywhere already.",
+  "states": [
+    {
+      "code": "AN",
+      "name": "Andaman and Nicobar Islands",
+      "verified": false
+    },
+    {
+      "code": "AP",
+      "name": "Andhra Pradesh",
+      "verified": false
+    },
+    {
+      "code": "AR",
+      "name": "Arunachal Pradesh",
+      "verified": false
+    },
+    {
+      "code": "AS",
+      "name": "Assam",
+      "verified": false
+    },
+    {
+      "code": "BR",
+      "name": "Bihar",
+      "verified": false
+    },
+    {
+      "code": "CH",
+      "name": "Chandigarh",
+      "verified": false
+    },
+    {
+      "code": "CG",
+      "name": "Chhattisgarh",
+      "verified": false
+    },
+    {
+      "code": "DN",
+      "name": "Dadra and Nagar Haveli and Daman and Diu",
+      "verified": false
+    },
+    {
+      "code": "DL",
+      "name": "Delhi",
+      "verified": false
+    },
+    {
+      "code": "GA",
+      "name": "Goa",
+      "verified": false
+    },
+    {
+      "code": "GJ",
+      "name": "Gujarat",
+      "verified": false
+    },
+    {
+      "code": "HR",
+      "name": "Haryana",
+      "verified": false
+    },
+    {
+      "code": "HP",
+      "name": "Himachal Pradesh",
+      "verified": false
+    },
+    {
+      "code": "JK",
+      "name": "Jammu and Kashmir",
+      "verified": false
+    },
+    {
+      "code": "JH",
+      "name": "Jharkhand",
+      "verified": false
+    },
+    {
+      "code": "KA",
+      "name": "Karnataka",
+      "verified": false
+    },
+    {
+      "code": "KL",
+      "name": "Kerala",
+      "verified": false
+    },
+    {
+      "code": "LA",
+      "name": "Ladakh",
+      "verified": false
+    },
+    {
+      "code": "LD",
+      "name": "Lakshadweep",
+      "verified": false
+    },
+    {
+      "code": "MP",
+      "name": "Madhya Pradesh",
+      "verified": false
+    },
+    {
+      "code": "MH",
+      "name": "Maharashtra",
+      "verified": false
+    },
+    {
+      "code": "MN",
+      "name": "Manipur",
+      "verified": false
+    },
+    {
+      "code": "ML",
+      "name": "Meghalaya",
+      "verified": false
+    },
+    {
+      "code": "MZ",
+      "name": "Mizoram",
+      "verified": false
+    },
+    {
+      "code": "NL",
+      "name": "Nagaland",
+      "verified": false
+    },
+    {
+      "code": "OD",
+      "name": "Odisha",
+      "verified": false
+    },
+    {
+      "code": "PY",
+      "name": "Puducherry",
+      "verified": false
+    },
+    {
+      "code": "PB",
+      "name": "Punjab",
+      "verified": false
+    },
+    {
+      "code": "RJ",
+      "name": "Rajasthan",
+      "verified": false
+    },
+    {
+      "code": "SK",
+      "name": "Sikkim",
+      "verified": false
+    },
+    {
+      "code": "TN",
+      "name": "Tamil Nadu",
+      "verified": false
+    },
+    {
+      "code": "TS",
+      "name": "Telangana",
+      "verified": false
+    },
+    {
+      "code": "TR",
+      "name": "Tripura",
+      "verified": false
+    },
+    {
+      "code": "UP",
+      "name": "Uttar Pradesh",
+      "verified": false
+    },
+    {
+      "code": "UK",
+      "name": "Uttarakhand",
+      "verified": false
+    },
+    {
+      "code": "WB",
+      "name": "West Bengal",
+      "verified": false
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "id": "financial-fraud",
+  "title": "Financial Fraud",
+  "summary": "For banking, card and UPI fraud, phishing and similar money loss.",
+  "whatToDoNow": [
+    "Call 1930 immediately if a fraudulent transaction just happened.",
+    "Call your bank's official fraud number to block the card or freeze the account.",
+    "Do not share OTPs, PINs or passwords with anyone who contacts you, even if they claim to be from the bank.",
+    "If a SIM swap is suspected, contact your telecom operator and check Sanchar Saathi."
+  ],
+  "whoToContact": [
+    "1930, National Cybercrime Reporting Helpline",
+    "Your bank's fraud or dispute helpline",
+    "Your telecom operator, for SIM-related fraud"
+  ],
+  "whereToReport": [
+    "National Cyber Crime Reporting Portal (cybercrime.gov.in)",
+    "Sanchar Saathi, to check or block SIMs issued in your name",
+    "Nearest police station"
+  ],
+  "whatInformationToKeep": [
+    "Transaction IDs, amounts and timestamps",
+    "Account, card or loan numbers involved",
+    "Any SMS, email or app notification about the fraud"
+  ],
+  "whatEvidenceToPreserve": [
+    "Bank statements showing the disputed transactions",
+    "Screenshots of the fraudulent message, call log or website",
+    "Correspondence with your bank or telecom provider"
+  ],
+  "officialLinks": [
+    {
+      "label": "National Cyber Crime Reporting Portal",
+      "url": "https://cybercrime.gov.in",
+      "sourceId": "ncrp"
+    },
+    {
+      "label": "Sanchar Saathi",
+      "url": "https://sancharsaathi.gov.in",
+      "sourceId": "sancharsaathi"
+    }
+  ],
+  "helplineIds": [
+    "cybercrime-1930",
+    "ncrp-portal",
+    "sancharsaathi"
+  ],
+  "relatedRoutes": [
+    "report-cyber",
+    "evidence"
+  ]
+}

@@ -1,0 +1,243 @@
+{
+  "note": "National helplines. See sources.json for publisher, URL and verification date per entry.",
+  "entries": [
+    {
+      "id": "erss-112",
+      "name": "Emergency Response Support System (ERSS)",
+      "category": [
+        "emergency",
+        "police",
+        "fire",
+        "ambulance"
+      ],
+      "number": "112",
+      "website": "https://112.gov.in",
+      "stateCode": "IN",
+      "description": "India's single, unified emergency number for police, fire and ambulance response, run by the Ministry of Home Affairs.",
+      "availability": "24x7",
+      "sourceId": "erss",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "cybercrime-1930",
+      "name": "National Cybercrime Reporting Helpline",
+      "category": [
+        "cybercrime",
+        "financial-fraud"
+      ],
+      "number": "1930",
+      "website": "https://cybercrime.gov.in",
+      "stateCode": "IN",
+      "description": "Call immediately to report financial cyber fraud (UPI, banking, card) so the amount can potentially be frozen before it moves further. Also used for other cybercrime reports.",
+      "availability": "24x7",
+      "sourceId": "i4c-1930",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "ncrp-portal",
+      "name": "National Cyber Crime Reporting Portal (NCRP)",
+      "category": [
+        "cybercrime",
+        "financial-fraud",
+        "women",
+        "child"
+      ],
+      "number": "Online portal",
+      "website": "https://cybercrime.gov.in",
+      "stateCode": "IN",
+      "description": "File a detailed cybercrime complaint online, with a special focus on crimes against women and children.",
+      "availability": "24x7 online",
+      "sourceId": "ncrp",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "women-181",
+      "name": "Women Helpline",
+      "category": [
+        "women"
+      ],
+      "number": "181",
+      "website": "https://missionshakti.wcd.gov.in",
+      "stateCode": "IN",
+      "description": "Government of India helpline for women affected by violence or in distress, and for information on women-focused schemes, under Mission Shakti.",
+      "availability": "24x7",
+      "sourceId": "wcd-181",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "child-1098",
+      "name": "Child Helpline (CHILDLINE)",
+      "category": [
+        "child"
+      ],
+      "number": "1098",
+      "website": "https://missionvatsalya.wcd.gov.in",
+      "stateCode": "IN",
+      "description": "For any child in need of care and protection, or anyone reporting concern for a child's safety.",
+      "availability": "24x7",
+      "sourceId": "childline-1098",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "telemanas",
+      "name": "Tele MANAS — Mental Health Helpline",
+      "category": [
+        "mental-health"
+      ],
+      "number": "14416",
+      "website": "https://telemanas.mohfw.gov.in",
+      "stateCode": "IN",
+      "description": "Free, confidential tele-counselling and mental health support from the Ministry of Health and Family Welfare.",
+      "availability": "24x7",
+      "sourceId": "telemanas",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "legal-aid-15100",
+      "name": "National Legal Aid Helpline (NALSA)",
+      "category": [
+        "legal-aid",
+        "women"
+      ],
+      "number": "15100",
+      "website": "https://nalsa.gov.in",
+      "stateCode": "IN",
+      "description": "Free legal aid and advice from the National Legal Services Authority, including assistance for women.",
+      "availability": "Business hours (varies by state legal services authority)",
+      "sourceId": "nalsa-15100",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "railmadad-139",
+      "name": "Rail Madad",
+      "category": [
+        "travel",
+        "railway"
+      ],
+      "number": "139",
+      "website": "https://railmadad.indianrailways.gov.in",
+      "stateCode": "IN",
+      "description": "Indian Railways' integrated helpline for security concerns, medical emergencies and other assistance while travelling by train.",
+      "availability": "24x7",
+      "sourceId": "railmadad-139",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "nhai-1033",
+      "name": "National Highway Helpline",
+      "category": [
+        "travel",
+        "highway"
+      ],
+      "number": "1033",
+      "website": "https://nhai.gov.in",
+      "stateCode": "IN",
+      "description": "Toll-free NHAI helpline for emergencies and assistance on national highways.",
+      "availability": "24x7",
+      "sourceId": "nhai-1033",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "elderline-14567",
+      "name": "Elderline — Senior Citizens Helpline",
+      "category": [
+        "senior-citizens"
+      ],
+      "number": "14567",
+      "website": "https://elderline.dosje.gov.in",
+      "stateCode": "IN",
+      "description": "National helpline offering care, guidance and assistance for senior citizens.",
+      "availability": "8:00 AM – 8:00 PM, all days",
+      "sourceId": "elderline-14567",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "consumer-nch",
+      "name": "National Consumer Helpline",
+      "category": [
+        "consumer"
+      ],
+      "number": "1800-11-4000",
+      "website": "https://consumerhelpline.gov.in",
+      "stateCode": "IN",
+      "description": "Assistance and complaint registration for consumer grievances, run by the Department of Consumer Affairs.",
+      "availability": "Mon–Sat, 9:30 AM – 5:30 PM",
+      "sourceId": "nch-consumer",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "shebox-portal",
+      "name": "SHe-Box — Workplace Harassment Portal",
+      "category": [
+        "women",
+        "workplace-harassment"
+      ],
+      "number": "Online portal",
+      "website": "https://shebox.wcd.gov.in",
+      "stateCode": "IN",
+      "description": "File a sexual harassment complaint under the POSH Act, 2013, routed to the relevant Internal or Local Committee.",
+      "availability": "Online, anytime",
+      "sourceId": "shebox",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "ncw-complaint",
+      "name": "National Commission for Women (NCW)",
+      "category": [
+        "women",
+        "legal-aid"
+      ],
+      "number": "Online portal",
+      "website": "https://ncw.gov.in",
+      "stateCode": "IN",
+      "description": "Statutory body for women's rights; register a complaint online for redress and follow-up.",
+      "availability": "Online, anytime",
+      "sourceId": "ncw",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "sancharsaathi",
+      "name": "Sanchar Saathi",
+      "category": [
+        "lost-phone",
+        "identity"
+      ],
+      "number": "Online portal",
+      "website": "https://sancharsaathi.gov.in",
+      "stateCode": "IN",
+      "description": "Block or trace a lost or stolen mobile phone, and check which SIM connections are registered in your name.",
+      "availability": "Online, anytime",
+      "sourceId": "sancharsaathi",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "ndma-contact",
+      "name": "National Disaster Management Authority — Control Room",
+      "category": [
+        "disaster"
+      ],
+      "number": "011-1078",
+      "website": "https://ndma.gov.in",
+      "stateCode": "IN",
+      "description": "National disaster helpline for large-scale emergencies and disaster response coordination.",
+      "availability": "24x7 during activation; otherwise check the NDMA site",
+      "sourceId": "ndma",
+      "verifiedOn": "2026-09-24"
+    },
+    {
+      "id": "tourist-helpline",
+      "name": "Tourist Helpline",
+      "category": [
+        "travel",
+        "tourism"
+      ],
+      "number": "Listed on tourism.gov.in",
+      "website": "https://tourism.gov.in",
+      "stateCode": "IN",
+      "description": "Ministry of Tourism's 24x7 multilingual tourist helpline.",
+      "availability": "24x7",
+      "sourceId": "tourism",
+      "verifiedOn": "2026-09-24"
+    }
+  ]
+}
